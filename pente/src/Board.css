@@ -1,0 +1,6 @@
+.board {
+    display: grid;
+    grid-template-columns: repeat(19, 40px); /* Adjust the size as needed */
+    grid-gap: 4px; /* Adjust the gap between squares */
+    justify-content: center;
+}

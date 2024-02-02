@@ -1,0 +1,14 @@
+.square {
+    width: 40px; /* Adjust the size as needed */
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc; /* Add borders for better visibility */
+    font-size: 16px; /* Adjust the font size as needed */
+    cursor: pointer;
+}
+
+.square:hover {
+    background-color: #f0f0f0; /* Add a background color on hover */
+}
