@@ -6,7 +6,8 @@ import '../Button.css';
 const Game = () => {
     const [squares, setSquares] = useState(Array(39 * 39).fill(null));
     const [boardSize, setBoardSize] = useState(39);
-    let gameMode = 0;
+    const [turn, setTurn] = useState(true);
+    const [gameMode, setGameMode] = useState(false);
 
     const handleSquareClick = (index) => {
         // Update squares array based on user's move
@@ -15,7 +16,7 @@ const Game = () => {
         setSquares(newSquares);
     };
 
-    const handleRestartGame = () =>
+    const handleRestartGame = () => // just set the board to an empty board lol
     {
         setSquares(Array(boardSize * boardSize).fill(null));
     }
@@ -33,6 +34,10 @@ const Game = () => {
         document.getElementById("board").setAttribute("style", "grid-template-columns: repeat(" + size + ", 40px)"); // fix the style of the 2d array so its a square
     }
 
+    const updateGameMode = () => { // swap game mode based on playing with ai checkbox
+        setGameMode(!gameMode);
+    }
+
     return (
         <div id="Game">
             <div className="slidercontainer">
@@ -46,6 +51,10 @@ const Game = () => {
             </div>
             <div className="button" onClick={handleRestartGame}>
                 Restart Game
+            </div>
+            <div>
+                <input type="checkbox" id="AI" onChange={updateGameMode}/>
+                <label for="AI"> Play against AI</label>
             </div>
             <div className="game">
                 <Board squares={squares} onClick={handleSquareClick} />
