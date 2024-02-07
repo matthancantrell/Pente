@@ -12,7 +12,7 @@ const Game = () => {
     const handleSquareClick = (index) => {
         // Update squares array based on user's move
         const newSquares = [...squares];
-        if (gameMode === 0) // pvp functionality
+        if (gameMode === false) // pvp functionality
         {
             if (turn)
             {
@@ -36,7 +36,22 @@ const Game = () => {
         }
         setTurn(!turn);
         setSquares(newSquares);
+        checkrow(index);
     };
+
+    const checkrow = (rawIndex) => 
+    {
+        const newSquares = [...squares];
+        // horizontal check
+        let horizontalIndexAdjusted = rawIndex % boardSize;
+        // this is going to be bad
+        let count = 0;
+        if (horizontalIndexAdjusted - 4 >= 0)
+        {
+            //newSquares[rawIndex - 4]
+        }
+        //newSquares[rawIndexndex]
+    }
 
     const handleRestartGame = () => // just set the board to an empty board lol
     {
@@ -61,6 +76,7 @@ const Game = () => {
 
     const updateGameMode = () => { // swap game mode based on playing with ai checkbox
         setGameMode(!gameMode);
+        console.log(gameMode);
     }
 
     return (
