@@ -69,9 +69,12 @@ const Game = () => {
     
     const updateSize = () => { // this is terrible but it works
         let size = document.getElementById("BoardSize").value; // get the value from the slider
-        setBoardSize(size); // set the board size
-        setSquares(Array(size * size).fill(null)); // set the 2d array
-        document.getElementById("board").setAttribute("style", "grid-template-columns: repeat(" + size + ", 40px)"); // fix the style of the 2d array so its a square
+        if (size % 2 === 1)
+        {
+            setBoardSize(size); // set the board size
+            setSquares(Array(size * size).fill(null)); // set the 2d array
+            document.getElementById("board").setAttribute("style", "grid-template-columns: repeat(" + size + ", 40px)"); // fix the style of the 2d array so its a square
+        }
     }
 
     const updateGameMode = () => { // swap game mode based on playing with ai checkbox
