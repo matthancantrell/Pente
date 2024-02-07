@@ -15,6 +15,11 @@ const Game = () => {
         setSquares(newSquares);
     };
 
+    const handleRestartGame = () =>
+    {
+        setSquares(Array(boardSize * boardSize).fill(null));
+    }
+
     const handleStartGame = () => { // this doesnt work at all lol
         document.getElementById("Game").innerHTML = `<div className="game">
         <Board squares={squares} onClick={handleSquareClick} />
@@ -38,6 +43,9 @@ const Game = () => {
             </div>
             <div className="button" onClick={handleStartGame}>
                 Start Game
+            </div>
+            <div className="button" onClick={handleRestartGame}>
+                Restart Game
             </div>
             <div className="game">
                 <Board squares={squares} onClick={handleSquareClick} />
