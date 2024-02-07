@@ -5,7 +5,7 @@ import '../Board.css'
 
 const Board = ({ squares, onClick }) => {
 return (
-    <div className="board">
+    <div id="board" className="board">
         {squares.map((value, index) => (
             <Square key={index} value={value} onClick={() => onClick(index)} />
         ))}
