@@ -12,7 +12,29 @@ const Game = () => {
     const handleSquareClick = (index) => {
         // Update squares array based on user's move
         const newSquares = [...squares];
-        newSquares[index] = 'X'; // or 'O', depending on the player
+        if (gameMode === 0) // pvp functionality
+        {
+            if (turn)
+            {
+                newSquares[index] = 'X'; // or 'O', depending on the player
+            }
+            else
+            {
+                newSquares[index] = 'O';
+            }
+        }
+        else
+        {
+            newSquares[index] = 'X';
+            let randomIndex = (Math.random() * (boardSize * boardSize)).toFixed() - 1;
+            //console.log(newSquares[randomIndex]);
+            while (newSquares[randomIndex] != null)
+            {
+                randomIndex = (Math.random() * (boardSize * boardSize)).toFixed() - 1;
+            }
+            newSquares[randomIndex] = 'O';
+        }
+        setTurn(!turn);
         setSquares(newSquares);
     };
 
@@ -22,9 +44,12 @@ const Game = () => {
     }
 
     const handleStartGame = () => { // this doesnt work at all lol
-        document.getElementById("Game").innerHTML = `<div className="game">
-        <Board squares={squares} onClick={handleSquareClick} />
-    </div>`
+        document.getElementById("Game").innerHTML = ``;
+        return(
+            `<div className="game">
+                <Board squares={squares} onClick={handleSquareClick} />
+            </div>`
+        );
     }
     
     const updateSize = () => { // this is terrible but it works
@@ -45,9 +70,6 @@ const Game = () => {
             </div>
             <div id="SizeText">
                 {boardSize}
-            </div>
-            <div className="button" onClick={handleStartGame}>
-                Start Game
             </div>
             <div className="button" onClick={handleRestartGame}>
                 Restart Game
