@@ -17,16 +17,37 @@ const Game = () => {
         {
             if (turn)
             {
-                newSquares[index] = 'X'; // or 'O', depending on the player
+                if (newSquares[index] === null)
+                {
+                    newSquares[index] = 'X'; // or 'O', depending on the player
+                }
+                else
+                {
+                    return;
+                }
             }
             else
             {
-                newSquares[index] = 'O';
+                if (newSquares[index] === null)
+                {
+                    newSquares[index] = 'O';
+                }
+                else
+                {
+                    return;
+                }
             }
         }
         else
         {
-            newSquares[index] = 'X';
+            if (newSquares[index] === null)
+            {
+                newSquares[index] = 'X';
+            }
+            else
+            {
+                return;
+            }
             let randomIndex = (Math.random() * (boardSize * boardSize)).toFixed() - 1;
             //console.log(newSquares[randomIndex]);
             while (newSquares[randomIndex] != null)
@@ -35,21 +56,56 @@ const Game = () => {
             }
             newSquares[randomIndex] = 'O';
         }
-        setTurn(!turn);
         setSquares(newSquares);
-        checkrow(index);
+        checkrow(index, newSquares);
+        setTurn(!turn);
     };
 
-    const checkrow = (rawIndex) => 
+    const checkrow = (rawIndex, squares) => 
     {
-        const newSquares = [...squares];
+        const newSquares = squares;
         // horizontal check
-        let horizontalIndexAdjusted = rawIndex % boardSize;
+        let horizontalIndexAdjusted = rawIndex % boardSize; // convert the 1d index into the index on the row
         // this is going to be bad
         let count = 0;
-        if (horizontalIndexAdjusted - 4 >= 0)
+        let maxCount = 0;
+        //console.log(squares);
+
+        for (let i = horizontalIndexAdjusted - 4; i <= horizontalIndexAdjusted + 4; i++) // for loop based on row index
         {
-            //newSquares[rawIndex - 4]
+            // convert the row index to -4 - 4
+            let mapped = (((i - (horizontalIndexAdjusted - 4)) * (-4 - 4)) / ((horizontalIndexAdjusted + 4) - (horizontalIndexAdjusted - 4))) + 4;
+            if (i >= 0 && i < boardSize) // make sure that the index we are checking is on the row
+            {
+                if (turn) // check x if its player 1 and o if its player 2
+                {
+                    if (newSquares[rawIndex + mapped] === "X")
+                    {
+                        count++;
+                    }
+                    else
+                    {
+                        if (maxCount < count) maxCount = count; 
+                        count = 0; 
+                    }
+                }
+                else
+                {
+                    if (newSquares[rawIndex + mapped] === "O")
+                    {
+                        count++;
+                    }
+                    else
+                    {
+                        if (maxCount < count) maxCount = count; 
+                        count = 0; 
+                    }
+                }
+            }
+        }
+        if (maxCount >= 5 || count == 5)
+        {
+            console.log("Done");
         }
         //newSquares[rawIndexndex]
     }
@@ -57,6 +113,7 @@ const Game = () => {
     const handleRestartGame = () => // just set the board to an empty board lol
     {
         setSquares(Array(boardSize * boardSize).fill(null));
+        setTurn(true);
     }
 
     const handleStartGame = () => { // this doesnt work at all lol
