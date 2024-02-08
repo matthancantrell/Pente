@@ -66,11 +66,13 @@ const Game = () => {
         const newSquares = squares;
         // horizontal check
         let horizontalIndexAdjusted = rawIndex % boardSize; // convert the 1d index into the index on the row
+        let verticalIndexAdjusted = (rawIndex / boardSize).toFixed();
         // this is going to be bad
         let count = 0;
         let maxCount = 0;
         //console.log(squares);
 
+        // do the horizontal check
         for (let i = horizontalIndexAdjusted - 4; i <= horizontalIndexAdjusted + 4; i++) // for loop based on row index
         {
             // convert the row index to -4 - 4
@@ -103,11 +105,48 @@ const Game = () => {
                 }
             }
         }
+
+        // do the vertical check
+        for (let i = verticalIndexAdjusted - 4; i <= verticalIndexAdjusted + 4; i++)
+        {
+            // this mapping is wrong. once fixed it should work
+            let mapped = (((i - (verticalIndexAdjusted - 4)) * (4 + 4)) / ((verticalIndexAdjusted + 4) - (verticalIndexAdjusted - 4))) - 4;
+            if (i >= 0 && i < boardSize)
+            {
+                console.log(mapped);
+                //newSquares[rawIndex + (mapped * boardSize)] = "Y";
+                if (turn)
+                {
+                    if (newSquares[rawIndex + (mapped * boardSize)] === "X")
+                    {
+                        count++;
+                    }
+                    else
+                    {
+                        if (maxCount < count) maxCount = count; 
+                        count = 0; 
+                    }
+                }
+                else
+                {
+                    if (newSquares[rawIndex + (mapped * boardSize)] === "O")
+                    {
+                        count++;
+                    }
+                    else
+                    {
+                        if (maxCount < count) maxCount = count; 
+                        count = 0; 
+                    }
+                }
+            }
+        }
+
         if (maxCount >= 5 || count == 5)
         {
             console.log("Done");
         }
-        //newSquares[rawIndexndex]
+        setSquares(newSquares);
     }
 
     const handleRestartGame = () => // just set the board to an empty board lol
