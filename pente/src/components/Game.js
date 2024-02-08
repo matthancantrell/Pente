@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import Board from './Board';
 
 import '../Button.css';
+import { useLocation } from 'react-router-dom';
 
 const Game = () => {
     const [squares, setSquares] = useState(Array(39 * 39).fill(null));
     const [boardSize, setBoardSize] = useState(39);
     const [turn, setTurn] = useState(true);
     const [gameMode, setGameMode] = useState(false);
-
+    
     const handleSquareClick = (index) => {
         // Update squares array based on user's move
         const newSquares = [...squares];
