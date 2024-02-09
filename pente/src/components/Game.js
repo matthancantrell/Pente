@@ -105,6 +105,8 @@ const Game = () => {
                 }
             }
         }
+        if (maxCount < count) maxCount = count; 
+        count = 0; 
 
         // do the vertical check
         for (let j = verticalIndexAdjusted + 4; j >= verticalIndexAdjusted - 4; j--)
@@ -138,6 +140,8 @@ const Game = () => {
                 }
             }
         }
+        if (maxCount < count) maxCount = count; 
+        count = 0;
 
         // do diagonal \ check
         for (let k = -4; k <= 4; k++)
@@ -146,7 +150,6 @@ const Game = () => {
                 (verticalIndexAdjusted + k) >= 0 && (verticalIndexAdjusted + k) < boardSize)
             {
                 //newSquares[(horizontalIndexAdjusted + k) + ((verticalIndexAdjusted + k) * boardSize)] = 'Y';
-                //console.log("horizontal: " + (horizontalIndexAdjusted + k) + "   vertical: " + (verticalIndexAdjusted + k) + "   raw: " + rawIndex)
                 if (turn)
                 {
                     if (newSquares[(horizontalIndexAdjusted + k) + ((verticalIndexAdjusted + k) * boardSize)] === "X")
@@ -173,10 +176,47 @@ const Game = () => {
                 }
             }
         }
+        if (maxCount < count) maxCount = count; 
+        count = 0;
 
         // do diagonal / check
+        for (let k = -4; k <= 4; k++)
+        {
+            if ((horizontalIndexAdjusted - k) >= 0 && (horizontalIndexAdjusted - k) < boardSize &&
+                (verticalIndexAdjusted + k) >= 0 && (verticalIndexAdjusted + k) < boardSize)
+            {
+                //newSquares[(((horizontalIndexAdjusted - k) + (verticalIndexAdjusted + k) * boardSize))] = 'Y';
+                //console.log("total: " + ((horizontalIndexAdjusted - k) + ((verticalIndexAdjusted + k) * boardSize)));
+                if (turn)
+                {
+                    if (newSquares[(horizontalIndexAdjusted - k) + ((verticalIndexAdjusted + k) * boardSize)] === "X")
+                    {
+                        count++;
+                    }
+                    else
+                    {
+                        if (maxCount < count) maxCount = count; 
+                        count = 0; 
+                    }
+                }
+                else
+                {
+                    if (newSquares[(horizontalIndexAdjusted - k) + ((verticalIndexAdjusted + k) * boardSize)] === "O")
+                    {
+                        count++;
+                    }
+                    else
+                    {
+                        if (maxCount < count) maxCount = count; 
+                        count = 0; 
+                    }
+                }
+            }
+        }
+        if (maxCount < count) maxCount = count; 
+        count = 0;
 
-        //console.log(" ");
+        console.log(" ");
         //console.log(maxCount);
         if (maxCount >= 5 || count === 5)
         {
