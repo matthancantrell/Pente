@@ -9,6 +9,8 @@ const Game = () => {
     const [boardSize, setBoardSize] = useState(39);
     const [turn, setTurn] = useState(true);
     const [gameMode, setGameMode] = useState(false);
+    const [playerOneTaken, setPlayerOneTaken] = useState(0);
+    const [playerTwoTaken, setPlayerTwoTaken] = useState(0);
     
     const handleSquareClick = (index) => {
         // Update squares array based on user's move
@@ -57,14 +59,14 @@ const Game = () => {
             newSquares[randomIndex] = 'O';
         }
         setSquares(newSquares);
-        checkrow(index, newSquares);
+        checkRow(index, newSquares);
+        takePiece(index, newSquares);
         setTurn(!turn);
     };
 
-    const checkrow = (rawIndex, squares) => 
+    const checkRow = (rawIndex, squares) => 
     {
         const newSquares = squares;
-        // horizontal check
         let horizontalIndexAdjusted = rawIndex % boardSize; // convert the 1d index into the index on the row
         let verticalIndexAdjusted = Math.trunc(rawIndex / boardSize); // onvert the 1d index to the index in the column
         // this is going to be bad
@@ -217,6 +219,172 @@ const Game = () => {
         if (maxCount >= 5 || count === 5)
         {
             console.log("Done");
+        }
+    }
+
+    const  takePiece = (rawIndex, squares)=> {
+        const newSquares = squares;
+        let horizontalIndexAdjusted = rawIndex % boardSize; // convert the 1d index into the index on the row
+        let verticalIndexAdjusted = Math.trunc(rawIndex / boardSize); // onvert the 1d index to the index in the column
+        // there is probably a way to do this in a for loop but i dont care enough about the readability of this
+        // if you are actually reading through this, just stop. you dont want to see this. trust me
+        if (turn)
+        {
+            // these four are the easy ones
+            if(newSquares[rawIndex + 3] === 'X' && (horizontalIndexAdjusted + 3) < boardSize) // these should probably be swapped but i dont think that javascript cares enough to crash
+            {
+                if (newSquares[rawIndex + 2] === 'O' && newSquares[rawIndex + 1] === 'O')
+                {
+                    newSquares[rawIndex + 2] = null;
+                    newSquares[rawIndex + 1] = null;
+                    setPlayerOneTaken(playerOneTaken + 1);
+                }
+            }
+            if (newSquares[rawIndex - 3] === 'X' && (horizontalIndexAdjusted - 3) >= 0)
+            {
+                if (newSquares[rawIndex - 2] === 'O' && newSquares[rawIndex - 1] === 'O')
+                {
+                    newSquares[rawIndex - 2] = null;
+                    newSquares[rawIndex - 1] = null;
+                    setPlayerOneTaken(playerOneTaken + 1);
+                }
+            }
+            if (newSquares[rawIndex + (3 * boardSize)] === 'X' && (verticalIndexAdjusted + 3) < boardSize)
+            {
+
+                if (newSquares[rawIndex + (2 * boardSize)] === 'O' && newSquares[rawIndex + (1 * boardSize)] === 'O')
+                {
+                    newSquares[rawIndex + (2 * boardSize)] = null;
+                    newSquares[rawIndex + (1 * boardSize)] = null;
+                    setPlayerOneTaken(playerOneTaken + 1);
+                }
+            }
+            if (newSquares[rawIndex - (3 * boardSize)] === 'X' && (verticalIndexAdjusted - 3) >= 0)
+            {
+                if (newSquares[rawIndex - (2 * boardSize)] === 'O' && newSquares[rawIndex - boardSize] === 'O')
+                {
+                    newSquares[rawIndex - (2 * boardSize)] = null;
+                    newSquares[rawIndex - boardSize] = null;
+                    setPlayerOneTaken(playerOneTaken + 1);
+                }
+            }
+
+            // these are going to get messy fast
+            if (newSquares[rawIndex + 3 + (3 * boardSize)] === 'X' && (horizontalIndexAdjusted + 3) < boardSize && (verticalIndexAdjusted + 3) < boardSize)
+            {
+                if (newSquares[rawIndex + 2 + (2 * boardSize)] === 'O' && newSquares[rawIndex + 1 + (1 * boardSize)] === 'O')
+                {
+                    newSquares[rawIndex + 2 + (2 * boardSize)] = null;
+                    newSquares[rawIndex + 1 + (1 * boardSize)] = null;
+                    setPlayerOneTaken(playerOneTaken + 1);
+                }
+            }
+            if (newSquares[rawIndex + 3 - (3 * boardSize)] === 'X' && (horizontalIndexAdjusted + 3) < boardSize && (verticalIndexAdjusted - 3) >= 0)
+            {
+                if (newSquares[rawIndex + 2 - (2 * boardSize)] === 'O' && newSquares[rawIndex + 1 - boardSize] === 'O')
+                {
+                    newSquares[rawIndex + 2 - (2 * boardSize)] = null;
+                    newSquares[rawIndex + 1 - boardSize] = null;
+                    setPlayerOneTaken(playerOneTaken + 1);
+                }
+            }
+            if (newSquares[rawIndex - 3 + (3 * boardSize)] === 'X' && (horizontalIndexAdjusted - 3) >= 0 && (verticalIndexAdjusted + 3) < boardSize)
+            {
+                if (newSquares[rawIndex - 2 + (2 * boardSize)] === 'O' && newSquares[rawIndex - 1 + (1 * boardSize)] === 'O')
+                {
+                    newSquares[rawIndex - 2 + (2 * boardSize)] = null;
+                    newSquares[rawIndex - 1 + (1 * boardSize)] = null;
+                    setPlayerOneTaken(playerOneTaken + 1);
+                }
+            }
+            if (newSquares[rawIndex - 3 - (3 * boardSize)] === 'X' && (horizontalIndexAdjusted - 3) >= 0 && (verticalIndexAdjusted - 3) >= 0)
+            {
+                if (newSquares[rawIndex - 2 - (2 * boardSize)] === 'O' && newSquares[rawIndex - 1 - boardSize] === 'O')
+                {
+                    newSquares[rawIndex - 2 - (2 * boardSize)] = null;
+                    newSquares[rawIndex - 1 - boardSize] = null;
+                    setPlayerOneTaken(playerOneTaken + 1);
+                }
+            }
+        }
+        else
+        {
+            // these four are the easy ones
+            if(newSquares[rawIndex + 3] === 'O' && (horizontalIndexAdjusted + 3) < boardSize) // these should probably be swapped but i dont think that javascript cares enough to crash
+            {
+                if (newSquares[rawIndex + 2] === 'X' && newSquares[rawIndex + 1] === 'X')
+                {
+                    newSquares[rawIndex + 2] = null;
+                    newSquares[rawIndex + 1] = null;
+                    setPlayerOneTaken(playerOneTaken + 1);
+                }
+            }
+            if (newSquares[rawIndex - 3] === 'O' && (horizontalIndexAdjusted - 3) >= 0)
+            {
+                if (newSquares[rawIndex - 2] === 'X' && newSquares[rawIndex - 1] === 'X')
+                {
+                    newSquares[rawIndex - 2] = null;
+                    newSquares[rawIndex - 1] = null;
+                    setPlayerOneTaken(playerOneTaken + 1);
+                }
+            }
+            if (newSquares[rawIndex + (3 * boardSize)] === 'O' && (verticalIndexAdjusted + 3) < boardSize)
+            {
+
+                if (newSquares[rawIndex + (2 * boardSize)] === 'X' && newSquares[rawIndex + (1 * boardSize)] === 'X')
+                {
+                    newSquares[rawIndex + (2 * boardSize)] = null;
+                    newSquares[rawIndex + (1 * boardSize)] = null;
+                    setPlayerOneTaken(playerOneTaken + 1);
+                }
+            }
+            if (newSquares[rawIndex - (3 * boardSize)] === 'O' && (verticalIndexAdjusted - 3) >= 0)
+            {
+                if (newSquares[rawIndex - (2 * boardSize)] === 'X' && newSquares[rawIndex - boardSize] === 'X')
+                {
+                    newSquares[rawIndex - (2 * boardSize)] = null;
+                    newSquares[rawIndex - boardSize] = null;
+                    setPlayerOneTaken(playerOneTaken + 1);
+                }
+            }
+
+            // these are going to get messy fast
+            if (newSquares[rawIndex + 3 + (3 * boardSize)] === 'O' && (horizontalIndexAdjusted + 3) < boardSize && (verticalIndexAdjusted + 3) < boardSize)
+            {
+                if (newSquares[rawIndex + 2 + (2 * boardSize)] === 'X' && newSquares[rawIndex + 1 + (1 * boardSize)] === 'X')
+                {
+                    newSquares[rawIndex + 2 + (2 * boardSize)] = null;
+                    newSquares[rawIndex + 1 + (1 * boardSize)] = null;
+                    setPlayerOneTaken(playerOneTaken + 1);
+                }
+            }
+            if (newSquares[rawIndex + 3 - (3 * boardSize)] === 'O' && (horizontalIndexAdjusted + 3) < boardSize && (verticalIndexAdjusted - 3) >= 0)
+            {
+                if (newSquares[rawIndex + 2 - (2 * boardSize)] === 'X' && newSquares[rawIndex + 1 - boardSize] === 'X')
+                {
+                    newSquares[rawIndex + 2 - (2 * boardSize)] = null;
+                    newSquares[rawIndex + 1 - boardSize] = null;
+                    setPlayerOneTaken(playerOneTaken + 1);
+                }
+            }
+            if (newSquares[rawIndex - 3 + (3 * boardSize)] === 'O' && (horizontalIndexAdjusted - 3) >= 0 && (verticalIndexAdjusted + 3) < boardSize)
+            {
+                if (newSquares[rawIndex - 2 + (2 * boardSize)] === 'X' && newSquares[rawIndex - 1 + (1 * boardSize)] === 'X')
+                {
+                    newSquares[rawIndex - 2 + (2 * boardSize)] = null;
+                    newSquares[rawIndex - 1 + (1 * boardSize)] = null;
+                    setPlayerOneTaken(playerOneTaken + 1);
+                }
+            }
+            if (newSquares[rawIndex - 3 - (3 * boardSize)] === 'O' && (horizontalIndexAdjusted - 3) >= 0 && (verticalIndexAdjusted - 3) >= 0)
+            {
+                if (newSquares[rawIndex - 2 - (2 * boardSize)] === 'X' && newSquares[rawIndex - 1 - boardSize] === 'X')
+                {
+                    newSquares[rawIndex - 2 - (2 * boardSize)] = null;
+                    newSquares[rawIndex - 1 - boardSize] = null;
+                    setPlayerOneTaken(playerOneTaken + 1);
+                }
+            }
         }
     }
 
