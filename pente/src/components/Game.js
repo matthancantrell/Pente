@@ -66,11 +66,10 @@ const Game = () => {
         const newSquares = squares;
         // horizontal check
         let horizontalIndexAdjusted = rawIndex % boardSize; // convert the 1d index into the index on the row
-        let verticalIndexAdjusted = Math.trunc(rawIndex / boardSize);
+        let verticalIndexAdjusted = Math.trunc(rawIndex / boardSize); // onvert the 1d index to the index in the column
         // this is going to be bad
         let count = 0;
         let maxCount = 0;
-        //console.log(squares);
 
         // do the horizontal check
         for (let i = horizontalIndexAdjusted - 4; i <= horizontalIndexAdjusted + 4; i++) // for loop based on row index
@@ -109,12 +108,13 @@ const Game = () => {
         count = 0; 
 
         // do the vertical check
-        for (let j = verticalIndexAdjusted + 4; j >= verticalIndexAdjusted - 4; j--)
+        for (let j = verticalIndexAdjusted + 4; j >= verticalIndexAdjusted - 4; j--) // for loop based on the column index
         {
+            // convert the index to a range of -4 to 4
             let mapped = -((((j - (verticalIndexAdjusted - 4)) * (-4 - 4)) / ((verticalIndexAdjusted + 4) - (verticalIndexAdjusted - 4))) + 4);
-            if (j >= 0 && j < boardSize)
+            if (j >= 0 && j < boardSize) // ensure that we stay within the baord
             {
-                if (turn)
+                if (turn) // look for either x or o based on whose turn it is
                 {
                     if (newSquares[rawIndex + (mapped * boardSize)] === "X")
                     {
@@ -144,13 +144,12 @@ const Game = () => {
         count = 0;
 
         // do diagonal \ check
-        for (let k = -4; k <= 4; k++)
+        for (let k = -4; k <= 4; k++) // i probably could have done it this way instead of mapping for the other two but oh well
         {
             if ((horizontalIndexAdjusted + k) >= 0 && (horizontalIndexAdjusted + k) < boardSize &&
-                (verticalIndexAdjusted + k) >= 0 && (verticalIndexAdjusted + k) < boardSize)
+                (verticalIndexAdjusted + k) >= 0 && (verticalIndexAdjusted + k) < boardSize) // ensure we dont leave the board on either axis
             {
-                //newSquares[(horizontalIndexAdjusted + k) + ((verticalIndexAdjusted + k) * boardSize)] = 'Y';
-                if (turn)
+                if (turn) // i vaugely understand the math that im using for diagonal \ 
                 {
                     if (newSquares[(horizontalIndexAdjusted + k) + ((verticalIndexAdjusted + k) * boardSize)] === "X")
                     {
@@ -185,8 +184,7 @@ const Game = () => {
             if ((horizontalIndexAdjusted - k) >= 0 && (horizontalIndexAdjusted - k) < boardSize &&
                 (verticalIndexAdjusted + k) >= 0 && (verticalIndexAdjusted + k) < boardSize)
             {
-                //newSquares[(((horizontalIndexAdjusted - k) + (verticalIndexAdjusted + k) * boardSize))] = 'Y';
-                //console.log("total: " + ((horizontalIndexAdjusted - k) + ((verticalIndexAdjusted + k) * boardSize)));
+                // basically do the same as the last one but we go the opposite horizontal direction
                 if (turn)
                 {
                     if (newSquares[(horizontalIndexAdjusted - k) + ((verticalIndexAdjusted + k) * boardSize)] === "X")
@@ -216,13 +214,10 @@ const Game = () => {
         if (maxCount < count) maxCount = count; 
         count = 0;
 
-        console.log(" ");
-        //console.log(maxCount);
         if (maxCount >= 5 || count === 5)
         {
             console.log("Done");
         }
-        setSquares(newSquares);
     }
 
     const handleRestartGame = () => // just set the board to an empty board lol
