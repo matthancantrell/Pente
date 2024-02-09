@@ -138,9 +138,47 @@ const Game = () => {
                 }
             }
         }
+
+        // do diagonal \ check
+        for (let k = -4; k <= 4; k++)
+        {
+            if ((horizontalIndexAdjusted + k) >= 0 && (horizontalIndexAdjusted + k) < boardSize &&
+                (verticalIndexAdjusted + k) >= 0 && (verticalIndexAdjusted + k) < boardSize)
+            {
+                //newSquares[(horizontalIndexAdjusted + k) + ((verticalIndexAdjusted + k) * boardSize)] = 'Y';
+                //console.log("horizontal: " + (horizontalIndexAdjusted + k) + "   vertical: " + (verticalIndexAdjusted + k) + "   raw: " + rawIndex)
+                if (turn)
+                {
+                    if (newSquares[(horizontalIndexAdjusted + k) + ((verticalIndexAdjusted + k) * boardSize)] === "X")
+                    {
+                        count++;
+                    }
+                    else
+                    {
+                        if (maxCount < count) maxCount = count; 
+                        count = 0; 
+                    }
+                }
+                else
+                {
+                    if (newSquares[(horizontalIndexAdjusted + k) + ((verticalIndexAdjusted + k) * boardSize)] === "O")
+                    {
+                        count++;
+                    }
+                    else
+                    {
+                        if (maxCount < count) maxCount = count; 
+                        count = 0; 
+                    }
+                }
+            }
+        }
+
+        // do diagonal / check
+
         //console.log(" ");
         //console.log(maxCount);
-        if (maxCount >= 5 || count == 5)
+        if (maxCount >= 5 || count === 5)
         {
             console.log("Done");
         }
