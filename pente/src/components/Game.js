@@ -107,13 +107,11 @@ const Game = () => {
         }
 
         // do the vertical check
-        for (let i = verticalIndexAdjusted - 4; i <= verticalIndexAdjusted + 4; i++)
+        for (let j = verticalIndexAdjusted + 4; j >= verticalIndexAdjusted - 4; j--)
         {
-            // this mapping is wrong. once fixed it should work
-            let mapped = (((i - (verticalIndexAdjusted - 4)) * (-4 - 4)) / ((verticalIndexAdjusted + 4) - (verticalIndexAdjusted - 4))) + 4;
-            if (i >= 0 && i < boardSize)
+            let mapped = -((((j - (verticalIndexAdjusted - 4)) * (-4 - 4)) / ((verticalIndexAdjusted + 4) - (verticalIndexAdjusted - 4))) + 4);
+            if (j >= 0 && j < boardSize)
             {
-                //newSquares[rawIndex + (mapped * boardSize)] = "Y";
                 if (turn)
                 {
                     if (newSquares[rawIndex + (mapped * boardSize)] === "X")
@@ -140,7 +138,8 @@ const Game = () => {
                 }
             }
         }
-
+        //console.log(" ");
+        //console.log(maxCount);
         if (maxCount >= 5 || count == 5)
         {
             console.log("Done");
