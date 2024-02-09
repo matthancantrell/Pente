@@ -66,7 +66,7 @@ const Game = () => {
         const newSquares = squares;
         // horizontal check
         let horizontalIndexAdjusted = rawIndex % boardSize; // convert the 1d index into the index on the row
-        let verticalIndexAdjusted = (rawIndex / boardSize).toFixed();
+        let verticalIndexAdjusted = Math.trunc(rawIndex / boardSize);
         // this is going to be bad
         let count = 0;
         let maxCount = 0;
@@ -110,10 +110,9 @@ const Game = () => {
         for (let i = verticalIndexAdjusted - 4; i <= verticalIndexAdjusted + 4; i++)
         {
             // this mapping is wrong. once fixed it should work
-            let mapped = (((i - (verticalIndexAdjusted - 4)) * (4 + 4)) / ((verticalIndexAdjusted + 4) - (verticalIndexAdjusted - 4))) - 4;
+            let mapped = (((i - (verticalIndexAdjusted - 4)) * (-4 - 4)) / ((verticalIndexAdjusted + 4) - (verticalIndexAdjusted - 4))) + 4;
             if (i >= 0 && i < boardSize)
             {
-                console.log(mapped);
                 //newSquares[rawIndex + (mapped * boardSize)] = "Y";
                 if (turn)
                 {
