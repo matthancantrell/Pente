@@ -1,5 +1,4 @@
 import './App.css';
-import Game from './components/Game';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Index from './pages/Index';
 import NewGame from './pages/NewGame';

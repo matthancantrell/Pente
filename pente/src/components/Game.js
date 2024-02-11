@@ -4,7 +4,7 @@ import Board from './Board';
 import '../Button.css';
 import { useLocation } from 'react-router-dom';
 
-const Game = ({ sizeInput, firstPlayer }) => {
+const Game = ({ sizeInput, firstPlayer, startGameMode, pOneName, pTwoName }) => {
     const sizeInputNumber = Number.parseInt(sizeInput);
     const firstPlayerBool = (firstPlayer === 'playerOne')
     const [turn, setTurn] = useState(firstPlayerBool);
@@ -14,9 +14,15 @@ const Game = ({ sizeInput, firstPlayer }) => {
     const [squares, setSquares] = useState(Array(sizeInputNumber * sizeInputNumber).fill(null));
     const [boardSize, setBoardSize] = useState(39);
     
-    const [gameMode, setGameMode] = useState(false);
+    const [gameMode, setGameMode] = useState(startGameMode);
+    const [playerOneName, setPlayerOneName] = useState(pOneName);
+    const [playerTwoName, setPlayerTwoName] = useState(pTwoName);
     const [playerOneTaken, setPlayerOneTaken] = useState(0);
     const [playerTwoTaken, setPlayerTwoTaken] = useState(0);
+
+    const [gameOver, setGameOver] = useState(false);
+
+    let firstTurn = true;
 
     function startCountDown() {
         if (seconds > 0) {
@@ -33,27 +39,38 @@ const Game = ({ sizeInput, firstPlayer }) => {
         const newSquares = [...squares];
         if (gameMode === false) // pvp functionality
         {
-            if (turn)
+            if (seconds > 0)
             {
-                if (newSquares[index] === null)
+                if (turn)
                 {
-                    newSquares[index] = 'X'; // or 'O', depending on the player
+                    if (newSquares[index] === null)
+                    {
+                        newSquares[index] = 'X'; // or 'O', depending on the player
+                    }
+                    else
+                    {
+                        return;
+                    }
                 }
                 else
                 {
-                    return;
+                    if (newSquares[index] === null)
+                    {
+                        newSquares[index] = 'O';
+                    }
+                    else
+                    {
+                        return;
+                    }
                 }
-            }
-            else
-            {
-                if (newSquares[index] === null)
+                setSquares(newSquares);
+                checkRow(index, newSquares);
+                takePiece(index, newSquares);
+                if (playerOneTaken >= 5 || playerTwoTaken >= 5)
                 {
-                    newSquares[index] = 'O';
+                    setGameOver(true);
                 }
-                else
-                {
-                    return;
-                }
+                setSeconds(-100000);
             }
         }
         else
@@ -73,11 +90,24 @@ const Game = ({ sizeInput, firstPlayer }) => {
                 randomIndex = (Math.random() * (boardSize * boardSize)).toFixed() - 1;
             }
             newSquares[randomIndex] = 'O';
+            setSquares(newSquares);
+            checkRow(index, newSquares);
+            takePiece(index, newSquares);
+            checkRow(randomIndex, newSquares);
+            takePiece(randomIndex, newSquares);
+            if (playerOneTaken >= 5 || playerTwoTaken >= 5)
+            {
+                setGameOver(true);
+            }
+            if (!firstTurn)
+            {
+                setSeconds(-5);
+            }
+            else
+            {
+                setSeconds(20);
+            }
         }
-        setSquares(newSquares);
-        checkRow(index, newSquares);
-        takePiece(index, newSquares);
-        setTurn(!turn);
     };
 
     const checkRow = (rawIndex, squares) => 
@@ -234,11 +264,12 @@ const Game = ({ sizeInput, firstPlayer }) => {
 
         if (maxCount >= 5 || count === 5)
         {
-            console.log("Done");
+            setGameOver(true);
+            console.log("over");
         }
     }
 
-    const  takePiece = (rawIndex, squares)=> {
+    const takePiece = (rawIndex, squares)=> {
         const newSquares = squares;
         let horizontalIndexAdjusted = rawIndex % boardSize; // convert the 1d index into the index on the row
         let verticalIndexAdjusted = Math.trunc(rawIndex / boardSize); // onvert the 1d index to the index in the column
@@ -332,7 +363,7 @@ const Game = ({ sizeInput, firstPlayer }) => {
                 {
                     newSquares[rawIndex + 2] = null;
                     newSquares[rawIndex + 1] = null;
-                    setPlayerOneTaken(playerOneTaken + 1);
+                    setPlayerTwoTaken(playerTwoTaken + 1);
                 }
             }
             if (newSquares[rawIndex - 3] === 'O' && (horizontalIndexAdjusted - 3) >= 0)
@@ -341,7 +372,7 @@ const Game = ({ sizeInput, firstPlayer }) => {
                 {
                     newSquares[rawIndex - 2] = null;
                     newSquares[rawIndex - 1] = null;
-                    setPlayerOneTaken(playerOneTaken + 1);
+                    setPlayerTwoTaken(playerTwoTaken + 1);
                 }
             }
             if (newSquares[rawIndex + (3 * boardSize)] === 'O' && (verticalIndexAdjusted + 3) < boardSize)
@@ -351,7 +382,7 @@ const Game = ({ sizeInput, firstPlayer }) => {
                 {
                     newSquares[rawIndex + (2 * boardSize)] = null;
                     newSquares[rawIndex + (1 * boardSize)] = null;
-                    setPlayerOneTaken(playerOneTaken + 1);
+                    setPlayerTwoTaken(playerTwoTaken + 1);
                 }
             }
             if (newSquares[rawIndex - (3 * boardSize)] === 'O' && (verticalIndexAdjusted - 3) >= 0)
@@ -360,7 +391,7 @@ const Game = ({ sizeInput, firstPlayer }) => {
                 {
                     newSquares[rawIndex - (2 * boardSize)] = null;
                     newSquares[rawIndex - boardSize] = null;
-                    setPlayerOneTaken(playerOneTaken + 1);
+                    setPlayerTwoTaken(playerTwoTaken + 1);
                 }
             }
 
@@ -371,7 +402,7 @@ const Game = ({ sizeInput, firstPlayer }) => {
                 {
                     newSquares[rawIndex + 2 + (2 * boardSize)] = null;
                     newSquares[rawIndex + 1 + (1 * boardSize)] = null;
-                    setPlayerOneTaken(playerOneTaken + 1);
+                    setPlayerTwoTaken(playerTwoTaken + 1);
                 }
             }
             if (newSquares[rawIndex + 3 - (3 * boardSize)] === 'O' && (horizontalIndexAdjusted + 3) < boardSize && (verticalIndexAdjusted - 3) >= 0)
@@ -380,7 +411,7 @@ const Game = ({ sizeInput, firstPlayer }) => {
                 {
                     newSquares[rawIndex + 2 - (2 * boardSize)] = null;
                     newSquares[rawIndex + 1 - boardSize] = null;
-                    setPlayerOneTaken(playerOneTaken + 1);
+                    setPlayerTwoTaken(playerTwoTaken + 1);
                 }
             }
             if (newSquares[rawIndex - 3 + (3 * boardSize)] === 'O' && (horizontalIndexAdjusted - 3) >= 0 && (verticalIndexAdjusted + 3) < boardSize)
@@ -389,7 +420,7 @@ const Game = ({ sizeInput, firstPlayer }) => {
                 {
                     newSquares[rawIndex - 2 + (2 * boardSize)] = null;
                     newSquares[rawIndex - 1 + (1 * boardSize)] = null;
-                    setPlayerOneTaken(playerOneTaken + 1);
+                    setPlayerTwoTaken(playerTwoTaken + 1);
                 }
             }
             if (newSquares[rawIndex - 3 - (3 * boardSize)] === 'O' && (horizontalIndexAdjusted - 3) >= 0 && (verticalIndexAdjusted - 3) >= 0)
@@ -398,16 +429,10 @@ const Game = ({ sizeInput, firstPlayer }) => {
                 {
                     newSquares[rawIndex - 2 - (2 * boardSize)] = null;
                     newSquares[rawIndex - 1 - boardSize] = null;
-                    setPlayerOneTaken(playerOneTaken + 1);
+                    setPlayerTwoTaken(playerTwoTaken + 1);
                 }
             }
         }
-    }
-
-    const handleRestartGame = () => // just set the board to an empty board lol
-    {
-        setSquares(Array(boardSize * boardSize).fill(null));
-        setTurn(true);
     }
     
     const updateSize = () => { // this is terrible but it works
@@ -420,21 +445,28 @@ const Game = ({ sizeInput, firstPlayer }) => {
         }
     }
 
-    const updateGameMode = () => { // swap game mode based on playing with ai checkbox
-        setGameMode(!gameMode);
-        console.log(gameMode);
-    }
-
-    function StartGame() {
-        updateSize();
-    }
-
     function findCenter() {
         const centerIndex = Math.floor(sizeInputNumber / 2);
         handleSquareClick(centerIndex * sizeInputNumber + centerIndex);
     }
 
     function onClick() {
+        setSeconds(20);
+        setTurn(!turn);
+    }
+
+    function onContinue() {
+        setTurn(!turn);
+        const newSquares = [...squares];
+        let randomIndex = (Math.random() * (boardSize * boardSize)).toFixed() - 1;
+        while (newSquares[randomIndex] != null)
+        {
+            randomIndex = (Math.random() * (boardSize * boardSize)).toFixed() - 1;
+        }
+        newSquares[randomIndex] = 'O';
+        setSquares(newSquares);
+        checkRow(randomIndex, newSquares);
+        takePiece(randomIndex, newSquares);
         setSeconds(20);
         setTurn(!turn);
     }
@@ -449,21 +481,52 @@ const Game = ({ sizeInput, firstPlayer }) => {
         <div id="Game">
             <button>Save</button>
             <div className="game">
-                { seconds > 0 && (
+                { seconds > 0 && !gameOver && (
                     <>
                         <p>{seconds}</p>
                     </>
                 )}
-                { seconds < 0 && (
+                { seconds < 0  && seconds > -100000 && !gameMode && !gameOver && (
                     <>
                         <p>Times Up!</p>
                         { turn && (
-                            <p>Press Continue To Start Player Two's Turn</p>
+                            <p>Press Continue To Start {playerTwoName}'s Turn</p>
                         )}
                         { !turn && (
-                            <p>Press Continue To Start Player One's Turn</p>
+                            <p>Press Continue To Start{playerOneName}'s Turn</p>
                         )}
                         <button onClick={onClick}>Continue</button>
+                    </>
+                )}
+                { seconds < 0 && gameMode && !gameOver && (
+                    <>
+                        <p>Times Up!</p>
+                        { turn && (
+                            <p>Your Turn Has Been Skipped</p>
+                        )}
+                        <button onClick={onContinue}>Continue</button>
+                    </>
+                )}
+                { seconds <= -100000  && !gameMode && !gameOver && (
+                    <>
+                        { turn && (
+                            <p>Press Next When {playerTwoName} Is Ready</p>
+                        )}
+                        { !turn && (
+                            <p>Press Next When {playerOneName} Is Ready</p>
+                        )}
+                        <button onClick={onClick}>Continue</button>
+                    </>
+                )}
+                { gameOver && (
+                    <>
+                        { turn && (
+                            <p>{playerOneName} Wins!</p>
+                        )}
+                        { !turn && (
+                            <p>{playerTwoName} Wins!</p>
+                        )}
+                        <button><a href='/'>Restart</a></button>
                     </>
                 )}
                 <Board squares={squares} onClick={handleSquareClick} />
