@@ -1,16 +1,32 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Board from './Board';
 
 import '../Button.css';
 import { useLocation } from 'react-router-dom';
 
-const Game = () => {
-    const [squares, setSquares] = useState(Array(39 * 39).fill(null));
+const Game = ({ sizeInput, firstPlayer }) => {
+    const sizeInputNumber = Number.parseInt(sizeInput);
+    const firstPlayerBool = (firstPlayer === 'playerOne')
+    const [turn, setTurn] = useState(firstPlayerBool);
+
+    const [seconds, setSeconds] = useState(20);
+
+    const [squares, setSquares] = useState(Array(sizeInputNumber * sizeInputNumber).fill(null));
     const [boardSize, setBoardSize] = useState(39);
-    const [turn, setTurn] = useState(true);
+    
     const [gameMode, setGameMode] = useState(false);
     const [playerOneTaken, setPlayerOneTaken] = useState(0);
     const [playerTwoTaken, setPlayerTwoTaken] = useState(0);
+
+    function startCountDown() {
+        if (seconds > 0) {
+            const timer = setInterval(() => {
+                if(seconds > 0) {
+                    setSeconds(prevSeconds => prevSeconds - 0.5, 0);
+                }
+            }, 1000); // Update every 1 second
+        }
+    }
     
     const handleSquareClick = (index) => {
         // Update squares array based on user's move
@@ -393,18 +409,9 @@ const Game = () => {
         setSquares(Array(boardSize * boardSize).fill(null));
         setTurn(true);
     }
-
-    const handleStartGame = () => { // this doesnt work at all lol
-        document.getElementById("Game").innerHTML = ``;
-        return(
-            `<div className="game">
-                <Board squares={squares} onClick={handleSquareClick} />
-            </div>`
-        );
-    }
     
     const updateSize = () => { // this is terrible but it works
-        let size = document.getElementById("BoardSize").value; // get the value from the slider
+        let size = sizeInputNumber; // get the value from the slider
         if (size % 2 === 1)
         {
             setBoardSize(size); // set the board size
@@ -418,22 +425,47 @@ const Game = () => {
         console.log(gameMode);
     }
 
+    function StartGame() {
+        updateSize();
+    }
+
+    function findCenter() {
+        const centerIndex = Math.floor(sizeInputNumber / 2);
+        handleSquareClick(centerIndex * sizeInputNumber + centerIndex);
+    }
+
+    function onClick() {
+        setSeconds(20);
+        setTurn(!turn);
+    }
+
+    useEffect(() => {
+        updateSize();
+        findCenter();
+        startCountDown();
+    }, []);
+
     return (
         <div id="Game">
-            <div className="slidercontainer">
-                <input type="range" max="39" min="9" class="slider" id="BoardSize" onChange={updateSize}/>
-            </div>
-            <div id="SizeText">
-                {boardSize}
-            </div>
-            <div className="button" onClick={handleRestartGame}>
-                Restart Game
-            </div>
-            <div>
-                <input type="checkbox" id="AI" onChange={updateGameMode}/>
-                <label for="AI"> Play against AI</label>
-            </div>
+            <button>Save</button>
             <div className="game">
+                { seconds > 0 && (
+                    <>
+                        <p>{seconds}</p>
+                    </>
+                )}
+                { seconds < 0 && (
+                    <>
+                        <p>Times Up!</p>
+                        { turn && (
+                            <p>Press Continue To Start Player Two's Turn</p>
+                        )}
+                        { !turn && (
+                            <p>Press Continue To Start Player One's Turn</p>
+                        )}
+                        <button onClick={onClick}>Continue</button>
+                    </>
+                )}
                 <Board squares={squares} onClick={handleSquareClick} />
             </div>
         </div>
