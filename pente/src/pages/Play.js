@@ -20,7 +20,13 @@ function Play() {
                     </p>
                 </div>
                 <div>
-                    <Game sizeInput={ formData.boardSize } firstPlayer={ formData.firstPlayer } startGameMode={ formData.enemyType === "ai"} pOneName={ formData.playerOneName } pTwoName={ formData.playerTwoName }/>
+                    <Game 
+                        sizeInput={ formData.boardSize } 
+                        firstPlayer={ formData.firstPlayer }
+                        startGameMode = { formData.enemyType === "ai" } 
+                        p1_name={ formData.playerOneName } 
+                        p2_name={ formData.playerTwoName } 
+                    />
                 </div>
             </div>
         </>

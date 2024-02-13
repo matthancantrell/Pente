@@ -4,9 +4,13 @@ import Board from './Board';
 import '../Button.css';
 import { useLocation } from 'react-router-dom';
 
-const Game = ({ sizeInput, firstPlayer, startGameMode, pOneName, pTwoName }) => {
+const Game = ({ sizeInput, firstPlayer, startGameMode, p1_name, p2_name }) => {
     const sizeInputNumber = Number.parseInt(sizeInput);
     const firstPlayerBool = (firstPlayer === 'playerOne')
+
+    const [p1Pieces, setp1Pieces] = useState(null);
+    const [p2Pieces, setp2Pieces] = useState(null);
+
     const [turn, setTurn] = useState(firstPlayerBool);
 
     const [seconds, setSeconds] = useState(20);
@@ -15,14 +19,28 @@ const Game = ({ sizeInput, firstPlayer, startGameMode, pOneName, pTwoName }) => 
     const [boardSize, setBoardSize] = useState(39);
     
     const [gameMode, setGameMode] = useState(startGameMode);
-    const [playerOneName, setPlayerOneName] = useState(pOneName);
-    const [playerTwoName, setPlayerTwoName] = useState(pTwoName);
+    const [playerOneName, setPlayerOneName] = useState(p1_name);
+    const [playerTwoName, setPlayerTwoName] = useState(p2_name);
     const [playerOneTaken, setPlayerOneTaken] = useState(0);
     const [playerTwoTaken, setPlayerTwoTaken] = useState(0);
 
     const [gameOver, setGameOver] = useState(false);
 
     let firstTurn = true;
+
+    var state = {
+        Game: {
+            BoardSize: sizeInputNumber,
+            PlayerOne: {
+                Name: p1_name,
+                PlacedPieces: p1Pieces
+            },
+            PlayerTwo: {
+                Name: p2_name,
+                PlacedPieces: p2Pieces
+            },
+        }
+    }
 
     function startCountDown() {
         if (seconds > 0) {
@@ -108,6 +126,7 @@ const Game = ({ sizeInput, firstPlayer, startGameMode, pOneName, pTwoName }) => 
                 setSeconds(20);
             }
         }
+        savePieces();
     };
 
     const checkRow = (rawIndex, squares) => 
@@ -469,7 +488,47 @@ const Game = ({ sizeInput, firstPlayer, startGameMode, pOneName, pTwoName }) => 
         takePiece(randomIndex, newSquares);
         setSeconds(20);
         setTurn(!turn);
+        savePieces();
     }
+
+
+    const handleDownload = () => {
+        const { Game } = state;
+        const json = JSON.stringify(Game);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'board_data.json'; // Filename
+        document.body.appendChild(link);
+        
+        // Click the link to trigger download
+        link.click();
+        
+        // Clean up
+        URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+    }
+
+    const savePieces = () => {
+        const savedSquaresPlayerOne = {};
+        const savedSquaresPlayerTwo = {};
+    
+        for (let i = 0; i < sizeInputNumber; i++) {
+            for (let j = 0; j < sizeInputNumber; j++) {
+                const piece = squares[i * sizeInputNumber + j]; // Get the piece at the corresponding index
+                if (piece !== null && piece === 'X') {
+                    savedSquaresPlayerOne[`${i}-${j}`] = piece;
+                } else if (piece !== null && piece === 'O') {
+                    savedSquaresPlayerTwo[`${i}-${j}`] = piece;
+                }
+            }
+        }
+    
+        setp1Pieces(JSON.stringify(savedSquaresPlayerOne));
+        setp2Pieces(JSON.stringify(savedSquaresPlayerTwo));
+    };
 
     useEffect(() => {
         updateSize();
@@ -479,7 +538,7 @@ const Game = ({ sizeInput, firstPlayer, startGameMode, pOneName, pTwoName }) => 
 
     return (
         <div id="Game">
-            <button>Save</button>
+            <button onClick={handleDownload}>Save</button>
             <div className="game">
                 { seconds > 0 && !gameOver && (
                     <>
