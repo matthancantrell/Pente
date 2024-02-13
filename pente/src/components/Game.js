@@ -4,7 +4,7 @@ import Board from './Board';
 import '../Button.css';
 import { useLocation } from 'react-router-dom';
 
-const Game = ({ sizeInput, firstPlayer, startGameMode, p1_name, p2_name }) => {
+const Game = ({ sizeInput, firstPlayer, startGameMode, p1_name, p2_name, gameBoard }) => {
     const sizeInputNumber = Number.parseInt(sizeInput);
     const firstPlayerBool = (firstPlayer === 'playerOne')
 
@@ -15,7 +15,7 @@ const Game = ({ sizeInput, firstPlayer, startGameMode, p1_name, p2_name }) => {
 
     const [seconds, setSeconds] = useState(20);
 
-    const [squares, setSquares] = useState(Array(sizeInputNumber * sizeInputNumber).fill(null));
+    const [squares, setSquares] = useState(gameBoard === null ? Array(sizeInputNumber * sizeInputNumber).fill(null) : gameBoard);
     const [boardSize, setBoardSize] = useState(39);
     
     const [gameMode, setGameMode] = useState(startGameMode);
@@ -31,14 +31,11 @@ const Game = ({ sizeInput, firstPlayer, startGameMode, p1_name, p2_name }) => {
     var state = {
         Game: {
             BoardSize: sizeInputNumber,
-            PlayerOne: {
-                Name: p1_name,
-                PlacedPieces: p1Pieces
-            },
-            PlayerTwo: {
-                Name: p2_name,
-                PlacedPieces: p2Pieces
-            },
+            PlayerOneName: p1_name,
+            PlayerTwoName: p2_name,
+            Turn: turn,
+            Mode: gameMode,
+            Board: squares
         }
     }
 
@@ -126,7 +123,6 @@ const Game = ({ sizeInput, firstPlayer, startGameMode, p1_name, p2_name }) => {
                 setSeconds(20);
             }
         }
-        savePieces();
     };
 
     const checkRow = (rawIndex, squares) => 
@@ -459,7 +455,7 @@ const Game = ({ sizeInput, firstPlayer, startGameMode, p1_name, p2_name }) => {
         if (size % 2 === 1)
         {
             setBoardSize(size); // set the board size
-            setSquares(Array(size * size).fill(null)); // set the 2d array
+            setSquares(squares); // set the 2d array
             document.getElementById("board").setAttribute("style", "grid-template-columns: repeat(" + size + ", 40px)"); // fix the style of the 2d array so its a square
         }
     }
@@ -488,9 +484,7 @@ const Game = ({ sizeInput, firstPlayer, startGameMode, p1_name, p2_name }) => {
         takePiece(randomIndex, newSquares);
         setSeconds(20);
         setTurn(!turn);
-        savePieces();
     }
-
 
     const handleDownload = () => {
         const { Game } = state;
@@ -510,25 +504,6 @@ const Game = ({ sizeInput, firstPlayer, startGameMode, p1_name, p2_name }) => {
         URL.revokeObjectURL(url);
         document.body.removeChild(link);
     }
-
-    const savePieces = () => {
-        const savedSquaresPlayerOne = {};
-        const savedSquaresPlayerTwo = {};
-    
-        for (let i = 0; i < sizeInputNumber; i++) {
-            for (let j = 0; j < sizeInputNumber; j++) {
-                const piece = squares[i * sizeInputNumber + j]; // Get the piece at the corresponding index
-                if (piece !== null && piece === 'X') {
-                    savedSquaresPlayerOne[`${i}-${j}`] = piece;
-                } else if (piece !== null && piece === 'O') {
-                    savedSquaresPlayerTwo[`${i}-${j}`] = piece;
-                }
-            }
-        }
-    
-        setp1Pieces(JSON.stringify(savedSquaresPlayerOne));
-        setp2Pieces(JSON.stringify(savedSquaresPlayerTwo));
-    };
 
     useEffect(() => {
         updateSize();

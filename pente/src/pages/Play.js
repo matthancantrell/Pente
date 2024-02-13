@@ -26,6 +26,7 @@ function Play() {
                         startGameMode = { formData.enemyType === "ai" } 
                         p1_name={ formData.playerOneName } 
                         p2_name={ formData.playerTwoName } 
+                        gameBoard={ formData.board }
                     />
                 </div>
             </div>

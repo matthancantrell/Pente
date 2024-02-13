@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Game from "../components/Game";
 
 function LoadGame() {
     const [selectedFile, setSelectedFile] = useState(null);
@@ -34,9 +35,17 @@ function LoadGame() {
             <div>
                 <p>Game Data:</p>
                 <ul>
-                <li>Player One: {jsonData.PlayerOne.Name}</li>
-                <li>Player Two: {jsonData.PlayerTwo.Name}</li>
+                <li>Player One: {jsonData.PlayerOneName}</li>
+                <li>Player Two: {jsonData.PlayerTwoName}</li>
                 </ul>
+                <Game 
+                    sizeInput={ jsonData.BoardSize } 
+                    firstPlayer={ jsonData.PlayerOneName }
+                    startGameMode = { jsonData.Mode } 
+                    p1_name={ jsonData.PlayerOneName } 
+                    p2_name={ jsonData.PlayerTwoName } 
+                    gameBoard={ jsonData.Board }
+                />
             </div>
             )}
         </div>

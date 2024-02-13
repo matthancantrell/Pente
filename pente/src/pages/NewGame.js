@@ -7,7 +7,9 @@ function NewGame() {
         enemyType: '',
         firstPlayer: '',
         playerOneName: '',
-        playerTwoName: ''
+        playerTwoName: '',
+        turn: '',
+        board: null
     });
 
     const nav = useNavigate();
