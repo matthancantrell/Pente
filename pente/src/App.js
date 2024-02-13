@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Index from './pages/Index';
 import NewGame from './pages/NewGame';
 import Play from './pages/Play'
+import LoadGame from './pages/LoadGame';
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <Routes>
         <Route index element={<Index />}/>
         <Route path='/NewGame' element={<NewGame />} />
+        <Route path='/LoadGame' element={<LoadGame />} />
         <Route path='/Play' element={<Play />} />
       </Routes>
     </BrowserRouter>
