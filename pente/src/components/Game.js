@@ -52,75 +52,77 @@ const Game = ({ sizeInput, firstPlayer, startGameMode, p1_name, p2_name, gameBoa
     const handleSquareClick = (index) => {
         // Update squares array based on user's move
         const newSquares = [...squares];
-        if (gameMode === false) // pvp functionality
+        if (!gameOver)
         {
-            if (seconds > 0)
+            if (gameMode === false) // pvp functionality
             {
-                if (turn)
+                if (seconds > 0)
                 {
-                    if (newSquares[index] === null)
+                    if (turn)
                     {
-                        newSquares[index] = 'X'; // or 'O', depending on the player
+                        if (newSquares[index] === null)
+                        {
+                            newSquares[index] = 'X'; // or 'O', depending on the player
+                        }
+                        else
+                        {
+                            return;
+                        }
                     }
                     else
                     {
-                        return;
+                        if (newSquares[index] === null)
+                        {
+                            newSquares[index] = 'O';
+                        }
+                        else
+                        {
+                            return;
+                        }
                     }
+                    setSquares(newSquares);
+                    checkRow(index, newSquares);
+                    takePiece(index, newSquares);
+                    if (playerOneTaken >= 5 || playerTwoTaken >= 5)
+                    {
+                        setGameOver(true);
+                    }
+                    setSeconds(-100000);
+                }
+            }
+            else
+            {
+                if (newSquares[index] === null)
+                {
+                    newSquares[index] = 'X';
                 }
                 else
                 {
-                    if (newSquares[index] === null)
-                    {
-                        newSquares[index] = 'O';
-                    }
-                    else
-                    {
-                        return;
-                    }
+                    return;
                 }
+                let randomIndex = (Math.random() * (sizeInputNumber * sizeInputNumber)).toFixed() - 1;
+                while (newSquares[randomIndex] != null)
+                {
+                    randomIndex = (Math.random() * (sizeInputNumber * sizeInputNumber)).toFixed() - 1;
+                }
+                newSquares[randomIndex] = 'O';
                 setSquares(newSquares);
                 checkRow(index, newSquares);
                 takePiece(index, newSquares);
+                checkRow(randomIndex, newSquares);
+                takePiece(randomIndex, newSquares);
                 if (playerOneTaken >= 5 || playerTwoTaken >= 5)
                 {
                     setGameOver(true);
                 }
-                setSeconds(-100000);
-            }
-        }
-        else
-        {
-            if (newSquares[index] === null)
-            {
-                newSquares[index] = 'X';
-            }
-            else
-            {
-                return;
-            }
-            let randomIndex = (Math.random() * (boardSize * boardSize)).toFixed() - 1;
-            //console.log(newSquares[randomIndex]);
-            while (newSquares[randomIndex] != null)
-            {
-                randomIndex = (Math.random() * (boardSize * boardSize)).toFixed() - 1;
-            }
-            newSquares[randomIndex] = 'O';
-            setSquares(newSquares);
-            checkRow(index, newSquares);
-            takePiece(index, newSquares);
-            checkRow(randomIndex, newSquares);
-            takePiece(randomIndex, newSquares);
-            if (playerOneTaken >= 5 || playerTwoTaken >= 5)
-            {
-                setGameOver(true);
-            }
-            if (!firstTurn)
-            {
-                setSeconds(-5);
-            }
-            else
-            {
-                setSeconds(20);
+                if (!firstTurn)
+                {
+                    setSeconds(-5);
+                }
+                else
+                {
+                    setSeconds(20);
+                }
             }
         }
     };
