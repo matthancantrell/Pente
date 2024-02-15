@@ -4,14 +4,14 @@ import Board from './Board';
 import '../Button.css';
 import { useLocation } from 'react-router-dom';
 
-const Game = ({ sizeInput, firstPlayer, startGameMode, p1_name, p2_name, gameBoard }) => {
+const Game = ({ sizeInput, firstPlayer, startGameMode, p1_name, p2_name, gameBoard, playerOneCaptures, playerTwoCaptures, Turn }) => {
     const sizeInputNumber = Number.parseInt(sizeInput);
     const firstPlayerBool = (firstPlayer === 'playerOne')
 
     const [p1Pieces, setp1Pieces] = useState(null);
     const [p2Pieces, setp2Pieces] = useState(null);
 
-    const [turn, setTurn] = useState(firstPlayerBool);
+    const [turn, setTurn] = useState(Turn === null ? firstPlayerBool : Turn);
 
     const [seconds, setSeconds] = useState(20);
 
@@ -21,8 +21,8 @@ const Game = ({ sizeInput, firstPlayer, startGameMode, p1_name, p2_name, gameBoa
     const [gameMode, setGameMode] = useState(startGameMode);
     const [playerOneName, setPlayerOneName] = useState(p1_name);
     const [playerTwoName, setPlayerTwoName] = useState(p2_name);
-    const [playerOneTaken, setPlayerOneTaken] = useState(0);
-    const [playerTwoTaken, setPlayerTwoTaken] = useState(0);
+    const [playerOneTaken, setPlayerOneTaken] = useState(playerOneCaptures === null ? 0 : playerOneCaptures);
+    const [playerTwoTaken, setPlayerTwoTaken] = useState(playerTwoCaptures === null ? 0 : playerTwoCaptures);
 
     const [gameOver, setGameOver] = useState(false);
 
@@ -35,6 +35,9 @@ const Game = ({ sizeInput, firstPlayer, startGameMode, p1_name, p2_name, gameBoa
             PlayerTwoName: p2_name,
             Turn: turn,
             Mode: gameMode,
+            PlayerOneCaptures: playerOneTaken,
+            PlayerTwoCaptures: playerTwoTaken,
+            Turn: turn,
             Board: squares
         }
     }
