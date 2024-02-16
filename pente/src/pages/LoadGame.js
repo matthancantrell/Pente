@@ -29,6 +29,7 @@ function LoadGame() {
     
     return(
         <div>
+            <h1 name='Load Game'>Load Game</h1>
             <input type="file" onChange={handleFileChange} />
             {selectedFile && <p>Selected file: {selectedFile.name}</p>}
             {jsonData && (

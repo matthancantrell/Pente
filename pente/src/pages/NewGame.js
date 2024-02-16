@@ -43,7 +43,7 @@ function NewGame() {
 
     return (
         <div style={center}>
-            <h1>New Game</h1>
+            <h1 name='New Game'>New Game</h1>
 
             <form onSubmit={onSubmit}>
                 <p>
