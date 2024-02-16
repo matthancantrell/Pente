@@ -27,6 +27,9 @@ function Play() {
                         p1_name={ formData.playerOneName } 
                         p2_name={ formData.playerTwoName } 
                         gameBoard={ formData.board }
+                        playerOneCaptures={ null }
+                        playerTwoCaptures={ null }
+                        Turn={ null }
                     />
                 </div>
             </div>

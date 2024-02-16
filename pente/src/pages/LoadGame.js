@@ -46,6 +46,9 @@ function LoadGame() {
                     p1_name={ jsonData.PlayerOneName } 
                     p2_name={ jsonData.PlayerTwoName } 
                     gameBoard={ jsonData.Board }
+                    playerOneCaptures={ jsonData.PlayerOneCaptures }
+                    playerTwoCaptures={ jsonData.PlayerTwoCaptures }
+                    Turn={ jsonData.Turn }
                 />
             </div>
             )}
