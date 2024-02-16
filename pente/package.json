@@ -16,7 +16,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy" : "npm run build",
+    "deploy" : "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -38,6 +40,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.41.2",
-    "@types/node": "^20.11.17"
+    "@types/node": "^20.11.17",
+    "gh-pages": "^6.1.1"
   }
 }
